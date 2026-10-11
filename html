@@ -1,0 +1,498 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Football News — Toute l'actualité du football</title>
+<style>
+:root{
+  --bg:#080b12;--panel:#111722;--panel2:#171f2d;
+  --blue:#1677ff;--yellow:#ffd43b;--text:#f5f7fc;
+  --muted:#94a0b4;--border:#252e3d;--green:#36d399;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);
+font-family:Arial,Helvetica,sans-serif}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.topline{height:4px;background:linear-gradient(90deg,var(--blue),var(--yellow))}
+header{background:#0c111b;border-bottom:1px solid var(--border);
+position:sticky;top:0;z-index:10}
+.header{max-width:1450px;margin:auto;padding:17px 24px;
+display:flex;align-items:center;justify-content:space-between;gap:20px}
+.logo{font-size:27px;font-weight:900;letter-spacing:-1.2px}
+.logo span{color:var(--yellow)}
+.logo small{display:block;color:var(--muted);font-size:10px;
+letter-spacing:3px;margin-top:5px}
+nav{display:flex;gap:7px;flex-wrap:wrap}
+nav button,.secondary{border:0;background:transparent;color:#c5cede;
+padding:11px 13px;border-radius:8px;font-weight:700}
+nav button:hover,nav button.active{background:var(--panel2);color:var(--yellow)}
+.live-indicator{color:#ff5364;font-size:12px;font-weight:800;white-space:nowrap}
+.container{max-width:1450px;margin:auto;padding:24px}
+.hero{background:linear-gradient(115deg,#132e5c,#101b31 60%,#292516);
+border:1px solid #263e65;border-radius:18px;padding:30px;
+position:relative;overflow:hidden}
+.eyebrow{color:var(--yellow);font-size:12px;font-weight:900;
+letter-spacing:2px;text-transform:uppercase}
+.hero h1{font-size:clamp(32px,5vw,56px);line-height:1.04;
+margin:15px 0;max-width:750px;letter-spacing:-2px}
+.hero p{color:#c2cee2;max-width:600px;line-height:1.7}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:23px}
+.primary{background:var(--yellow);color:#111;border:0;border-radius:9px;
+padding:13px 18px;font-weight:900}
+.primary:hover{filter:brightness(.92)}
+.secondary{border:1px solid #45546b}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);
+gap:13px;margin:20px 0}
+.stat,.card{background:var(--panel);border:1px solid var(--border);
+border-radius:13px;padding:18px}
+.stat .label{color:var(--muted);font-size:12px}
+.stat strong{display:block;font-size:24px;margin-top:9px}
+.stat small{color:var(--green)}
+.section{margin-top:30px}
+.section-head{display:flex;justify-content:space-between;
+align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.section-head h2{margin:0;font-size:23px;letter-spacing:-.5px}
+.section-head h2 span{color:var(--yellow)}
+.tag{font-size:10px;font-weight:900;letter-spacing:1px;
+padding:6px 8px;border-radius:5px;background:#282e3b;color:#dce5f5}
+.tag.live{background:#3b1521;color:#ff7282}
+.layout{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(270px,1fr);
+gap:20px;align-items:start}
+.panel{background:var(--panel);border:1px solid var(--border);
+border-radius:14px;overflow:hidden}
+.panel-head{padding:17px;border-bottom:1px solid var(--border);
+display:flex;justify-content:space-between;align-items:center;gap:10px}
+.panel-head h3{margin:0;font-size:16px}
+.tabs{display:flex;gap:5px;flex-wrap:wrap}
+.tabs button{border:0;background:transparent;color:var(--muted);
+padding:7px 10px;border-radius:6px;font-size:12px}
+.tabs button.active{background:var(--panel2);color:var(--yellow)}
+.match{padding:16px;border-bottom:1px solid var(--border)}
+.match:last-child{border-bottom:0}
+.match-top{display:flex;justify-content:space-between;align-items:center;
+gap:10px;color:var(--muted);font-size:11px;margin-bottom:15px}
+.match-teams{display:grid;grid-template-columns:1fr auto 1fr;
+align-items:center;gap:12px}
+.team{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:700}
+.team:last-child{justify-content:flex-end;text-align:right}
+.crest{width:32px;height:32px;display:grid;place-items:center;
+border-radius:9px;background:var(--panel2);font-size:17px;flex-shrink:0}
+.score{font-size:22px;font-weight:900;white-space:nowrap}
+.score small{color:var(--muted);font-size:12px}
+.match-foot{display:flex;justify-content:space-between;margin-top:12px;
+font-size:11px;color:var(--muted)}
+.news-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.news{background:var(--panel);border:1px solid var(--border);
+border-radius:13px;overflow:hidden;transition:transform .2s,border .2s}
+.news:hover{transform:translateY(-3px);border-color:#3c5378}
+.news-art{height:135px;display:flex;align-items:center;justify-content:center;
+font-size:55px;background:linear-gradient(135deg,#172b4a,#18212e)}
+.news-body{padding:16px}
+.news-meta{display:flex;gap:9px;align-items:center;color:var(--muted);
+font-size:10px;margin-bottom:10px}
+.news h3{font-size:17px;line-height:1.4;margin:0 0 10px}
+.news p{color:var(--muted);font-size:13px;line-height:1.6;margin:0}
+.read-more{margin-top:14px;background:none;border:0;color:var(--yellow);
+font-weight:800;padding:0}
+.standings{width:100%;border-collapse:collapse;font-size:12px}
+.standings th{color:var(--muted);font-weight:600;text-align:left}
+.standings td,.standings th{padding:12px 9px;border-bottom:1px solid var(--border)}
+.standings tr:last-child td{border-bottom:0}
+.standings td:not(:nth-child(2)),.standings th:not(:nth-child(2)){text-align:center}
+.club{font-weight:700}
+.pos{color:var(--muted)}
+.form{display:flex;gap:10px;flex-wrap:wrap}
+.form input,.form select{background:var(--panel2);color:var(--text);
+border:1px solid var(--border);padding:12px;border-radius:8px;min-width:0}
+.form input{flex:1;min-width:180px}
+.notice{padding:13px 15px;background:#151e2c;border:1px solid var(--border);
+border-radius:9px;color:#bac7d9;font-size:12px;line-height:1.7;margin-top:14px}
+.notice strong{color:var(--yellow)}
+.empty{padding:25px;color:var(--muted);text-align:center;line-height:1.7}
+.page{display:none}
+.page.active{display:block}
+footer{margin-top:50px;padding:27px 24px;border-top:1px solid var(--border);
+color:var(--muted);font-size:12px;text-align:center;line-height:1.8}
+footer b{color:var(--yellow)}
+.hidden{display:none!important}
+@media(max-width:900px){
+ .header{flex-wrap:wrap}.layout{grid-template-columns:1fr}
+ .stats{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:560px){
+ .container{padding:14px}.header{padding:14px}
+ nav{width:100%;overflow-x:auto;flex-wrap:nowrap}
+ nav button{white-space:nowrap}.hero{padding:23px}
+ .news-list{grid-template-columns:1fr}
+ .team{font-size:11px;gap:6px}.crest{width:27px;height:27px}
+ .score{font-size:18px}.stat strong{font-size:20px}
+}
+</style>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="header">
+    <div class="logo">FOOTBALL<span>NEWS</span><small>LE FOOTBALL EN TEMPS RÉEL</small></div>
+    <div class="live-indicator">● LE FOOT, SANS INTERRUPTION</div>
+    <nav id="navigation">
+      <button class="active" data-page="accueil">Accueil</button>
+      <button data-page="direct">Résultats</button>
+      <button data-page="matchs">Matchs à venir</button>
+      <button data-page="classements">Classements</button>
+      <button data-page="actualites">Actualités</button>
+      <button data-page="mercato">Mercato</button>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+<section class="page active" id="page-accueil">
+  <div class="hero">
+    <div class="eyebrow">◆ Le rendez-vous des passionnés</div>
+    <h1>LE FOOTBALL.<br>EN GRAND.</h1>
+    <p>Résultats, grands matchs, actualités, mercato et classements :
+    toute l'actualité du football au même endroit.</p>
+    <div class="actions">
+      <button class="primary" onclick="showPage('actualites')">Explorer les actualités ↗</button>
+      <button class="secondary" onclick="showPage('direct')">Voir les résultats</button>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><span class="label">COMPÉTITIONS</span><strong>Europe & monde</strong><small>Football international</small></div>
+    <div class="stat"><span class="label">RÉSULTATS</span><strong id="statMatches">—</strong><small>Selon la source connectée</small></div>
+    <div class="stat"><span class="label">ACTUALITÉS</span><strong id="statNews">6 rubriques</strong><small>Le fil Football News</small></div>
+    <div class="stat"><span class="label">MISE À JOUR</span><strong id="lastUpdate">—</strong><small>Heure locale</small></div>
+  </div>
+
+  <div class="layout">
+    <div>
+      <section class="section" style="margin-top:0">
+        <div class="section-head"><h2>Les <span>scores</span></h2><span class="tag">MATCHS</span></div>
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Résultats et rencontres</h3>
+            <div class="tabs">
+              <button class="active" onclick="setMatchFilter('all',this)">Tous</button>
+              <button onclick="setMatchFilter('live',this)">En direct</button>
+              <button onclick="setMatchFilter('upcoming',this)">À venir</button>
+            </div>
+          </div>
+          <div id="homeMatches"></div>
+          <div class="panel-head"><button class="secondary" onclick="showPage('direct')">Tous les résultats →</button></div>
+        </div>
+      </section>
+    </div>
+    <div>
+      <section class="section" style="margin-top:0">
+        <div class="section-head"><h2>À la <span>une</span></h2></div>
+        <div id="sideNews"></div>
+      </section>
+      <section class="section">
+        <div class="section-head"><h2>Ton <span>football</span></h2></div>
+        <div class="panel" style="padding:17px">
+          <p style="color:var(--muted);font-size:13px;line-height:1.7;margin-top:0">
+            Configure une source de données pour récupérer les vrais résultats des compétitions.
+          </p>
+          <button class="primary" onclick="showPage('parametres')">Connecter une API ⚙</button>
+        </div>
+      </section>
+    </div>
+  </div>
+  <section class="section">
+    <div class="section-head"><h2>Dernières <span>actualités</span></h2><button class="secondary" onclick="showPage('actualites')">Tout voir →</button></div>
+    <div class="news-list" id="homeNews"></div>
+  </section>
+</section>
+
+<section class="page" id="page-direct">
+  <div class="section-head"><h2>Résultats <span>football</span></h2><span class="tag live">● EN DIRECT SI DISPONIBLE</span></div>
+  <div class="form">
+    <input id="matchSearch" placeholder="Rechercher un club ou une compétition..." oninput="renderMatches()">
+    <select id="competitionFilter" onchange="renderMatches()">
+      <option value="">Toutes les compétitions</option>
+      <option>Ligue 1</option><option>Premier League</option>
+      <option>La Liga</option><option>Serie A</option>
+      <option>Bundesliga</option><option>Ligue des champions</option>
+    </select>
+  </div>
+  <div class="panel section" id="allMatches"></div>
+  <div class="notice">Les matchs affichés sans connexion API sont des exemples de démonstration, pas des résultats réels.</div>
+</section>
+
+<section class="page" id="page-matchs">
+  <div class="section-head"><h2>Les matchs <span>à venir</span></h2><span class="tag">CALENDRIER</span></div>
+  <p style="color:var(--muted);line-height:1.7">Retrouve les prochaines rencontres lorsque les données sont disponibles.</p>
+  <div class="panel" id="upcomingMatches"></div>
+</section>
+
+<section class="page" id="page-classements">
+  <div class="section-head"><h2>Les <span>classements</span></h2><span class="tag">CHAMPIONNATS</span></div>
+  <div class="form">
+    <select id="leagueSelect" onchange="loadStandings()">
+      <option value="FL1">Ligue 1</option>
+      <option value="PL">Premier League</option>
+      <option value="PD">La Liga</option>
+      <option value="SA">Serie A</option>
+      <option value="BL1">Bundesliga</option>
+    </select>
+    <button class="primary" onclick="loadStandings()">Actualiser</button>
+  </div>
+  <div class="panel section" id="standingsPanel">
+    <div class="empty">Connecte une API pour charger le classement officiel.</div>
+  </div>
+</section>
+
+<section class="page" id="page-actualites">
+  <div class="section-head"><h2>Le fil <span>des actualités</span></h2><span class="tag">FOOTBALL</span></div>
+  <div class="form">
+    <input id="newsSearch" placeholder="Rechercher une actualité..." oninput="renderNews()">
+    <select id="newsCategory" onchange="renderNews()">
+      <option value="">Toutes les rubriques</option>
+      <option>Football français</option><option>Europe</option>
+      <option>International</option><option>Mercato</option>
+    </select>
+  </div>
+  <div class="news-list section" id="allNews"></div>
+  <div class="notice"><strong>Important :</strong> les articles de démonstration ne sont pas des dépêches réelles.
+  Pour un fil d'actualités automatiquement mis à jour, connecte une source d'actualités autorisée.</div>
+</section>
+
+<section class="page" id="page-mercato">
+  <div class="section-head"><h2>Le <span>mercato</span></h2><span class="tag">TRANSFERTS</span></div>
+  <div class="panel" style="padding:20px">
+    <h3>Les transferts du moment</h3>
+    <p style="color:var(--muted);line-height:1.8">
+      Cette rubrique est prête à accueillir les annonces, les rumeurs et les transferts confirmés.
+      Pour éviter les fausses informations, aucun transfert présenté ici n'est annoncé comme réel sans source.
+    </p>
+    <button class="primary" onclick="showPage('parametres')">Configurer les sources</button>
+  </div>
+  <div class="news-list section" id="mercatoNews"></div>
+</section>
+
+<section class="page" id="page-parametres">
+  <div class="section-head"><h2>Configuration <span>des données</span></h2><span class="tag">API</span></div>
+  <div class="panel" style="padding:22px">
+    <h3>Connecter une API de football</h3>
+    <p style="color:var(--muted);line-height:1.8">
+      Exemple de fournisseur : football-data.org. Crée un compte chez ce fournisseur pour obtenir
+      une clé API et vérifier les compétitions couvertes par ton offre.
+    </p>
+    <div class="form">
+      <input id="apiKey" type="password" placeholder="Colle ta clé API ici">
+      <button class="primary" onclick="saveApiKey()">Enregistrer et tester</button>
+    </div>
+    <div class="notice"><strong>Confidentialité :</strong> pour ce prototype, la clé est enregistrée
+    dans le navigateur de cet appareil. Ne publie pas cette clé dans un site public. Pour un vrai
+    site en ligne, utilise un serveur intermédiaire qui protège la clé API.</div>
+    <div id="apiStatus" class="notice" aria-live="polite">Aucune source API configurée.</div>
+    <div class="actions">
+      <button class="secondary" onclick="removeApiKey()">Supprimer la clé</button>
+      <button class="secondary" onclick="testApi()">Tester la connexion</button>
+    </div>
+    <hr style="border:0;border-top:1px solid var(--border);margin:25px 0">
+    <h3>Sources des actualités</h3>
+    <p style="color:var(--muted);line-height:1.8">
+      Les scores, les classements et les articles sont des flux distincts. Une API de résultats
+      ne fournit pas nécessairement les articles de presse. Pour les actualités, utilise une API
+      ou un flux autorisé, avec attribution à la source.
+    </p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="logo">FOOTBALL<span>NEWS</span></div>
+  <p>Le football, partout et à tout moment.</p>
+  Prototype indépendant, non affilié à L'Équipe ou à une fédération sportive.
+  <br>Les logos, marques et données appartiennent à leurs propriétaires respectifs.
+</footer>
+
+<script>
+const demoMatches = [
+ {comp:"Ligue 1",home:"Paris SG",away:"Marseille",a:"🔵",b:"⚪",score:"— : —",status:"À venir",time:"Horaire de démonstration"},
+ {comp:"Premier League",home:"Arsenal",away:"Liverpool",a:"🔴",b:"🔴",score:"— : —",status:"À venir",time:"Horaire de démonstration"},
+ {comp:"La Liga",home:"Real Madrid",away:"FC Barcelone",a:"⚪",b:"🔵",score:"— : —",status:"À venir",time:"Horaire de démonstration"},
+ {comp:"Serie A",home:"Inter Milan",away:"Juventus",a:"🔵",b:"⚫",score:"— : —",status:"À venir",time:"Horaire de démonstration"},
+ {comp:"Bundesliga",home:"Bayern Munich",away:"Dortmund",a:"🔴",b:"🟡",score:"— : —",status:"À venir",time:"Horaire de démonstration"},
+ {comp:"Ligue des champions",home:"À déterminer",away:"À déterminer",a:"⚽",b:"⚽",score:"— : —",status:"À venir",time:"Selon le calendrier officiel"}
+];
+const demoNews = [
+ {category:"Football français",title:"Ligue 1 : les enjeux de la saison",desc:"Retrouve les résultats, les équipes à suivre et les grandes affiches du championnat.",icon:"🇫🇷",date:"Dossier de présentation"},
+ {category:"Europe",title:"Ligue des champions : les grandes affiches",desc:"Le point sur les clubs européens et les rencontres à surveiller.",icon:"🏆",date:"Dossier de présentation"},
+ {category:"International",title:"Les sélections nationales en action",desc:"Calendriers internationaux, compétitions et performances des sélections.",icon:"🌍",date:"Dossier de présentation"},
+ {category:"Mercato",title:"Mercato : suivre les transferts",desc:"Les annonces officielles et les mouvements à vérifier auprès des clubs.",icon:"🔄",date:"Rubrique de présentation"},
+ {category:"Football français",title:"Les clubs français à suivre",desc:"Une rubrique dédiée aux clubs, aux joueurs et aux compétitions françaises.",icon:"⚽",date:"Dossier de présentation"},
+ {category:"Europe",title:"Les stars du football européen",desc:"Portraits de joueurs, statistiques et performances dans les championnats.",icon:"⭐",date:"Dossier de présentation"}
+];
+let matches = demoMatches.map(x=>({...x}));
+let apiToken = "";
+let realData = false;
+let matchFilter = "all";
+
+const $ = id => document.getElementById(id);
+function showPage(name){
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+ const page=$("page-"+name);
+ if(page)page.classList.add("active");
+ document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===name));
+ if(name==="direct")renderMatches();
+ if(name==="matchs")renderUpcoming();
+ if(name==="actualites")renderNews();
+ if(name==="mercato")renderMercato();
+ if(name==="classements")loadStandings();
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+document.querySelectorAll("nav button").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.page)));
+
+function escapeHTML(value){
+ return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function matchCard(m){
+ const status=escapeHTML(m.status||"À venir");
+ const isLive=/live|direct|in play/i.test(status);
+ return `<div class="match">
+ <div class="match-top"><span>${escapeHTML(m.comp||"Football")}</span><span class="tag ${isLive?"live":""}">${isLive?"● EN DIRECT":status}</span></div>
+ <div class="match-teams">
+ <div class="team"><span class="crest">${escapeHTML(m.a||"⚽")}</span><span>${escapeHTML(m.home)}</span></div>
+ <div class="score">${escapeHTML(m.score||"— : —")}</div>
+ <div class="team"><span>${escapeHTML(m.away)}</span><span class="crest">${escapeHTML(m.b||"⚽")}</span></div>
+ </div>
+ <div class="match-foot"><span>${escapeHTML(m.time||"Date non disponible")}</span><span>${realData?"Source API":"Démo"}</span></div>
+ </div>`;
+}
+function setMatchFilter(filter,button){
+ matchFilter=filter;
+ document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
+ button.classList.add("active");
+ renderMatches();
+}
+function filteredMatches(){
+ const q=($("matchSearch")?.value||"").toLowerCase();
+ const comp=$("competitionFilter")?.value||"";
+ return matches.filter(m=>{
+  const text=[m.home,m.away,m.comp].join(" ").toLowerCase();
+  const status=/live|direct|in play/i.test(m.status||"");
+  const upcoming=/à venir|scheduled|timed|not started/i.test(m.status||"");
+  return text.includes(q)&&(!comp||m.comp===comp)&&
+   (matchFilter==="all"||(matchFilter==="live"&&status)||(matchFilter==="upcoming"&&upcoming));
+ });
+}
+function renderMatches(){
+ const list=filteredMatches();
+ $("allMatches").innerHTML=list.length?list.map(matchCard).join(""):'<div class="empty">Aucun match correspondant. Essaie une autre recherche.</div>';
+ $("homeMatches").innerHTML=matches.slice(0,4).map(matchCard).join("");
+ $("statMatches").textContent=realData?String(matches.length):"Démo";
+}
+function renderUpcoming(){
+ const list=matches.filter(m=>!/live|direct|in play/i.test(m.status||""));
+ $("upcomingMatches").innerHTML=list.length?list.map(matchCard).join(""):'<div class="empty">Aucune rencontre disponible.</div>';
+}
+function newsCard(n){
+ return `<article class="news"><div class="news-art">${escapeHTML(n.icon||"⚽")}</div>
+ <div class="news-body"><div class="news-meta"><span>${escapeHTML(n.category)}</span><span>•</span><span>${escapeHTML(n.date||"")}</span></div>
+ <h3>${escapeHTML(n.title)}</h3><p>${escapeHTML(n.desc)}</p></div></article>`;
+}
+function renderNews(){
+ const q=($("newsSearch")?.value||"").toLowerCase();
+ const category=$("newsCategory")?.value||"";
+ const list=demoNews.filter(n=>(n.title+" "+n.desc+" "+n.category).toLowerCase().includes(q)&&(!category||n.category===category));
+ $("allNews").innerHTML=list.length?list.map(newsCard).join(""):'<div class="empty">Aucune actualité trouvée.</div>';
+}
+function renderMercato(){
+ $("mercatoNews").innerHTML=demoNews.filter(n=>n.category==="Mercato").map(newsCard).join("");
+}
+$("sideNews").innerHTML=demoNews.slice(0,2).map(newsCard).join("");
+$("homeNews").innerHTML=demoNews.slice(0,4).map(newsCard).join("");
+renderMatches();
+renderUpcoming();
+renderNews();
+renderMercato();
+
+function updateTime(){
+ $("lastUpdate").textContent=new Date().toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"});
+}
+updateTime();
+
+function saveApiKey(){
+ const key=$("apiKey").value.trim();
+ if(!key){$("apiStatus").textContent="Colle d'abord une clé API.";return;}
+ apiToken=key;
+ try{localStorage.setItem("footballNewsApiKey",key);}catch(e){}
+ $("apiStatus").textContent="Clé enregistrée dans ce navigateur. Test de connexion en cours…";
+ testApi();
+}
+function removeApiKey(){
+ apiToken="";
+ try{localStorage.removeItem("footballNewsApiKey");}catch(e){}
+ $("apiKey").value="";
+ $("apiStatus").textContent="Clé supprimée. Les données réelles ne sont plus chargées.";
+}
+async function apiFetch(path){
+ const response=await fetch("https://api.football-data.org/v4"+path,{
+  headers:{"X-Auth-Token":apiToken}
+ });
+ if(!response.ok)throw new Error("Erreur API HTTP "+response.status);
+ return response.json();
+}
+async function testApi(){
+ if(!apiToken){$("apiStatus").textContent="Entre une clé API avant de tester.";return;}
+ $("apiStatus").textContent="Connexion en cours…";
+ try{
+  const data=await apiFetch("/matches");
+  const list=(data.matches||[]).map(m=>{
+   const statusMap={IN_PLAY:"En direct",PAUSED:"Mi-temps",FINISHED:"Terminé",SCHEDULED:"À venir",TIMED:"À venir"};
+   const h=m.score?.fullTime?.home,a=m.score?.fullTime?.away;
+   const hasScore=h!==null&&h!==undefined&&a!==null&&a!==undefined;
+   const d=m.utcDate?new Date(m.utcDate):null;
+   return {
+    comp:m.competition?.name||"Football",
+    home:m.homeTeam?.shortName||m.homeTeam?.name||"Équipe A",
+    away:m.awayTeam?.shortName||m.awayTeam?.name||"Équipe B",
+    a:"⚽",b:"⚽",
+    score:hasScore?`${h} : ${a}`:"— : —",
+    status:statusMap[m.status]||m.status||"À venir",
+    time:d?d.toLocaleString("fr-FR",{dateStyle:"short",timeStyle:"short"}):"Date indisponible"
+   };
+  });
+  matches=list;
+  realData=true;
+  $("apiStatus").textContent="Connexion réussie : "+list.length+" rencontres récupérées. Les compétitions dépendent des droits de ton compte API.";
+  renderMatches();
+  renderUpcoming();
+  updateTime();
+ }catch(error){
+  $("apiStatus").textContent="Impossible de récupérer les matchs : "+error.message+". Vérifie la clé, ton accès API et la connexion internet.";
+ }
+}
+async function loadStandings(){
+ const code=$("leagueSelect").value;
+ if(!apiToken){
+  $("standingsPanel").innerHTML='<div class="empty">Connecte une API dans Configuration pour charger le classement officiel. Aucun classement fictif ne sera présenté comme réel.</div>';
+  return;
+ }
+ $("standingsPanel").innerHTML='<div class="empty">Chargement du classement…</div>';
+ try{
+  const data=await apiFetch("/competitions/"+encodeURIComponent(code)+"/standings");
+  const table=data.standings?.find(s=>s.type==="TOTAL")?.table||data.standings?.[0]?.table||[];
+  if(!table.length)throw new Error("Classement non disponible pour cette compétition ou cette formule.");
+  $("standingsPanel").innerHTML=`<div style="overflow-x:auto"><table class="standings">
+  <thead><tr><th>#</th><th>Club</th><th>J</th><th>V</th><th>N</th><th>D</th><th>Pts</th></tr></thead>
+  <tbody>${table.map(t=>`<tr><td class="pos">${t.position}</td><td class="club">${escapeHTML(t.team?.shortName||t.team?.name||"Club")}</td><td>${t.playedGames}</td><td>${t.won}</td><td>${t.draw}</td><td>${t.lost}</td><td><b>${t.points}</b></td></tr>`).join("")}</tbody>
+  </table></div>`;
+ }catch(error){
+  $("standingsPanel").innerHTML='<div class="empty">Classement indisponible : '+escapeHTML(error.message)+'. Vérifie les droits de ton API.</div>';
+ }
+}
+try{
+ const stored=localStorage.getItem("footballNewsApiKey");
+ if(stored){apiToken=stored;$("apiKey").value=stored;}
+}catch(e){}
+</script>
+</body>
+</htm
